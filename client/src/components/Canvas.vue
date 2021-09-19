@@ -1,11 +1,15 @@
 <template>
-  <canvas id="myCanvas" width="560" height="360" @mousedown="beginDrawing" @mousemove="keepDrawing" @mouseup="stopDrawing" />
-  <div>
-    <button @click="setColor('red')">Red</button>
-    <button @click="setColor('blue')">Blue</button>
-    <button @click="setColor('black')">Black</button>
+  <span>Pick a color to draw</span>
+    <div>
+    <button v-for="(item, index) in colors" :key="index" @click="setColor(item)">
+      <span :style="{color: item}">&#9632;</span>  
+      {{capitalizeFirstLetter(item)}}
+    </button>
   </div>
-
+  <canvas id="drawing-board" width="560" height="360" @mousedown="beginDrawing" @mousemove="keepDrawing" @mouseup="stopDrawing" />
+  <div>
+    <button v-on:click="clear()">Clear the drawing board</button>
+  </div>
 </template>
 
 <script>
@@ -20,7 +24,8 @@ export default {
       isDrawing: false,
       canvas: null,
       svgContext: null,
-      strokeStyle: 'black'
+      strokeStyle: 'black',
+      colors: ["red", "green", "blue", "yellow", "black"]
     }
   },
   methods: {
@@ -57,21 +62,29 @@ export default {
       }
       this.$emit('clicked', this.svgContext.getSerializedSvg())
     },
+    clear() {
+      this.canvas.clearRect(0, 0, 560, 360);
+      this.svgContext = new Context(560, 360);
+      this.$emit('clicked', this.svgContext.getSerializedSvg())
+    },
     setColor(color) {
       this.strokeStyle = color;
+    },
+    capitalizeFirstLetter(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
     }
+
   },
   mounted() {
-    var c = document.getElementById("myCanvas");
+    var c = document.getElementById("drawing-board");
     this.canvas = c.getContext('2d');
     this.svgContext = new Context(560, 360);
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  #myCanvas {
+  #drawing-board {
     border: 1px solid grey;
   }
 </style>
