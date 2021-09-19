@@ -1,24 +1,25 @@
 <template>
-  <input v-model="username" placeholder="What's your name?">
 
-  <Canvas @clicked="onClickChild"/>
-  <button v-on:click="sendMessage()">Send Message</button>
-  
-  
-  <div v-for="(item, index) in messages" :key="index" >
-    {{item.username}} sent everyone this beautiful picture on {{item.date}}
-    <div v-html="item.svg"/>
+  <div>
+    <div><input v-model="username" placeholder="What's your name?"></div>
+    <Canvas @clicked="onClickChild"/>
+    <button v-on:click="sendMessage()">Send Message</button>
+  </div>
+  <div>
+    <message v-for="(item, index) in messages" :key="index" v-bind:username="item.username" v-bind:date="item.date" v-bind:svg="item.svg"/>
   </div>
 </template>
 
 <script>
 import Canvas from './components/Canvas.vue'
+import Message from './components/Message.vue'
 
 
 export default {
   name: 'App',
   components: {
-    Canvas
+    Canvas,
+    Message
   },
   data: function() {
     return {
@@ -61,5 +62,7 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+  display: grid;
+  grid-template-columns: 1fr 1fr
 }
 </style>
